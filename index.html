@@ -16,7 +16,7 @@
 <meta name="twitter:image" content="https://demodaych.github.io/preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 116 130'%3E%3Cpath d='M58 3L112 34L112 96L58 127L4 96L4 34Z' fill='%23FFCD00'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,700;1,800;1,900&family=Open+Sans:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{--y:#FFCD00;--y2:#F2BE00;--y3:#E0A800;--g:#2B2B2D;--g2:#3A3A3D;--g3:#5A5A5E}
 *{box-sizing:border-box}
@@ -83,6 +83,11 @@ main{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:co
 .card:nth-child(1) .lk .shackle{animation-delay:.9s}.card:nth-child(2) .lk .shackle{animation-delay:1.15s}.card:nth-child(3) .lk .shackle{animation-delay:1.4s}
 @keyframes unlock{to{transform:translateY(-4px) rotate(-25deg)}}
 .name{margin:0;font-size:clamp(30px,4vw,38px);font-weight:900;font-style:italic;letter-spacing:-.01em;text-align:center}
+.name{min-height:64px;display:flex;align-items:center;justify-content:center}
+.logo{display:block;width:auto;max-width:100%;height:auto;max-height:52px}
+.card:nth-child(1) .logo{width:250px}.card:nth-child(2) .logo{width:220px}
+.desp{display:inline-flex;align-items:center;padding:12px 26px 14px;border-radius:14px;background:#2A2A2C;color:#fff;font-family:"Segoe UI","Open Sans",Arial,sans-serif;font-weight:700;font-style:normal;font-size:36px;letter-spacing:-.01em;line-height:1;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.desp .d{color:#FFC21A}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:999px;background:var(--y);color:var(--g);font-weight:800;font-size:17px;text-decoration:none;box-shadow:0 8px 18px rgba(200,150,0,.28);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(200,150,0,.36);background:#FFD633}
 .btn:focus-visible{outline:3px solid var(--g);outline-offset:3px}
@@ -149,9 +154,9 @@ footer img{width:118px;height:auto}
 <script>
 /* Enlaces de cada plataforma: pega aquí cada URL */
 const PLATAFORMAS = [
-  { num: "01", nombre: "Compensalia", url: "https://qrco.de/bh2K22" },
-  { num: "02", nombre: "Reclutalia",  url: "https://www.reclutalia.com" },
-  { num: "03", nombre: "Despidalia",  url: "" }
+  { num: "01", nombre: "Compensalia", url: "https://qrco.de/bh2K22",                   logo: "img/compensalia.png" },
+  { num: "02", nombre: "Reclutalia",  url: "https://reclutalia-demo-hn.firebaseapp.com/", logo: "img/reclutalia.png" },
+  { num: "03", nombre: "Despidalia",  url: "https://demodaych.github.io/despidalia/",   logo: "" }
 ];
 
 const lockSVG = (stroke) => `<svg class="lk" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path class="shackle" d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
@@ -167,7 +172,7 @@ cards.innerHTML = PLATAFORMAS.map((p, i) => {
   return `<article class="card">
     <div class="hex"><svg class="h" viewBox="0 0 116 130" aria-hidden="true"><path d="M58 3L112 34L112 96L58 127L4 96L4 34Z" fill="${fill}"/></svg>
       <div class="in" style="color:${fg}">${lockSVG(lk)}<span>${p.num}</span></div></div>
-    <h3 class="name">${p.nombre}</h3>
+    <h3 class="name">${p.logo ? `<img class="logo" src="${p.logo}" alt="${p.nombre}">` : `<span class="desp" role="img" aria-label="${p.nombre}"><span class="d">${p.nombre[0]}</span>${p.nombre.slice(1)}</span>`}</h3>
     ${btn}
   </article>`;
 }).join('');
