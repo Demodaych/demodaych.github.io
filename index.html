@@ -88,6 +88,13 @@ main{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:co
 .card:nth-child(1) .logo{width:250px}.card:nth-child(2) .logo{width:220px}
 .desp{display:inline-flex;align-items:center;padding:12px 26px 14px;border-radius:14px;background:#2A2A2C;color:#fff;font-family:"Segoe UI","Open Sans",Arial,sans-serif;font-weight:700;font-style:normal;font-size:36px;letter-spacing:-.01em;line-height:1;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .desp .d{color:#FFC21A}
+.acc{width:100%;margin-top:2px;padding:12px 14px;border-radius:14px;background:#FFF8DB;border:1px dashed #E0A800;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.acc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acc-k{font-weight:800;color:#5A5A5E;min-width:84px}
+.acc-v{font-weight:600;color:#2B2B2D}
+.mono{font-family:Consolas,"Courier New",monospace;font-weight:700;font-size:15px;background:#fff;padding:3px 8px;border-radius:6px;border:1px solid #EFD27A}
+.copy{margin-left:auto;font:inherit;font-size:13px;font-weight:800;color:#2B2B2D;background:#FFCD00;border:0;border-radius:999px;padding:7px 12px;min-height:32px;cursor:pointer}
+.copy:focus-visible{outline:2px solid #2B2B2D;outline-offset:2px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:999px;background:var(--y);color:var(--g);font-weight:800;font-size:17px;text-decoration:none;box-shadow:0 8px 18px rgba(200,150,0,.28);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(200,150,0,.36);background:#FFD633}
 .btn:focus-visible{outline:3px solid var(--g);outline-offset:3px}
@@ -154,7 +161,8 @@ footer img{width:118px;height:auto}
 <script>
 /* Enlaces de cada plataforma: pega aquí cada URL */
 const PLATAFORMAS = [
-  { num: "01", nombre: "Compensalia", url: "https://qrco.de/bh2K22",                   logo: "img/compensalia.png" },
+  { num: "01", nombre: "Compensalia", url: "https://gesecapitalhumano-gruposalinaslamdev.cloud.varicent.com/payeewebv2/login?basic=true", logo: "img/compensalia.png",
+    acceso: { usuario: "Tu correo electrónico", clave: "Compensalia.1" } },
   { num: "02", nombre: "Reclutalia",  url: "https://reclutalia-demo-hn.firebaseapp.com/", logo: "img/reclutalia.png" },
   { num: "03", nombre: "Despidalia",  url: "https://demodaych.github.io/despidalia/",   logo: "" }
 ];
@@ -174,6 +182,7 @@ cards.innerHTML = PLATAFORMAS.map((p, i) => {
       <div class="in" style="color:${fg}">${lockSVG(lk)}<span>${p.num}</span></div></div>
     <h3 class="name">${p.logo ? `<img class="logo" src="${p.logo}" alt="${p.nombre}">` : `<span class="desp" role="img" aria-label="${p.nombre}"><span class="d">${p.nombre[0]}</span>${p.nombre.slice(1)}</span>`}</h3>
     ${btn}
+    ${p.acceso ? `<div class="acc"><div class="acc-row"><span class="acc-k">Usuario</span><span class="acc-v">${p.acceso.usuario}</span></div><div class="acc-row"><span class="acc-k">Contraseña</span><span class="acc-v mono">${p.acceso.clave}</span><button class="copy" type="button" data-copy="${p.acceso.clave}" aria-label="Copiar contraseña">Copiar</button></div></div>` : ``}
   </article>`;
 }).join('');
 
@@ -205,6 +214,12 @@ envbtn.addEventListener('click', () => {
     doBurst();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, 2650);
+});
+cards.addEventListener('click', async (e) => {
+  const b = e.target.closest('.copy'); if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = '¡Copiada!'; }
+  catch (err) { b.textContent = 'Selecciónala'; }
+  setTimeout(() => { b.textContent = 'Copiar'; }, 1800);
 });
 document.getElementById('again').addEventListener('click', () => {
   opened = false;
