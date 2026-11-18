@@ -157,6 +157,9 @@ function bars(vals,labels,max,tipIdx,fmt){
   const shades=['#f3dc9e','#eed08a','#e8c477','#e2b863','#dcac50','#d6a03d','#cf942a','#c98818'];
   return `<div class="bars">${vals.map((v,i)=>`<div class="${i===tipIdx?'tip':''}" style="height:${v/max*100}%;background:${i===vals.length-1&&tipIdx===vals.length-1?'#cfcfcf':shades[i%8]}" data-t="${labels[i]}: ${fmt?fmt(v):v}"></div>`).join('')}</div><div class="lbls">${labels.map(l=>`<span>${l}</span>`).join('')}</div><div class="cx">Semana</div>`;
 }
+/* Pedidos simulados: [pedido, cartera vigente, saldo por interés]. El saldo por capital se calcula para que siempre cuadre. */
+const PEDIDOS=[[1710920,71371,5812.40],[1710945,140000,11236.75],[1711067,33825,2640.18],[1711105,28336,1987.55],[1711109,40710,3415.90],[1711170,28336,2268.30],[1711190,35938,3124.60],[1711214,28880,1756.25],[1711234,115624,9870.45],[1711277,39176,2904.80]];
+const fmt2=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const wk=(a,b)=>Array.from({length:b-a+1},(_,i)=>'2026-'+(a+i));
 const weekBlock=`<div class="week"><div class="w">2026, Semana 45</div><div class="d">del 2 de noviembre al 8 de noviembre 2026</div></div>`;
 
@@ -189,20 +192,23 @@ pago(){
   <div class="r"><div class="k">CONCURSOS</div><div class="v">L 0.00</div></div></div>${HELP}</div>`;
 },
 cartera(){
-  const rows=[[1710920,71371],[1710945,140000],[1711067,33825],[1711105,28336],[1711109,40710],[1711170,28336],[1711190,35938],[1711214,28880],[1711234,115624],[1711277,39176]];
+  const rows=PEDIDOS;
   return `<div class="pad watermark">${header(true)}<div class="ctitle">¿Cómo se compone tu cartera esta semana?</div><div class="small" style="text-align:center;font-weight:600">2 de noviembre al 8 de noviembre 2026</div>
   <div class="grid2"><div class="y"><b>L 26,636,044.79</b>Cartera Vigente</div><div class="y"><b>L 947,571.00</b>Cartera vigente colocada esta semana</div></div>
   <div class="w2">Cartera total = L 27,583,615.79</div><span class="chip">Semana</span>
-  <div style="overflow-x:auto"><table><tr><th>Pedido ↑</th><th>Cartera Vigente</th><th>Detalle</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].toFixed(2)}</td><td><a data-go="vigente">Ver mas</a></td></tr>`).join('')}</table></div>${HELP}</div>`;
+  <div style="overflow-x:auto"><table><tr><th>Pedido ↑</th><th>Cartera Vigente</th><th>Detalle</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].toFixed(2)}</td><td><a data-go="vigente" data-ped="${r[0]}" href="#" role="button">Ver mas</a></td></tr>`).join('')}</table></div>${HELP}</div>`;
 },
 vigente(){
+  const pd=PEDIDOS.find(r=>r[0]===state.pedido)||PEDIDOS[0];
+  const total=pd[1], inte=pd[2], cap=Math.round((total-inte)*100)/100;
   return `<div class="pad"><button class="back" data-back aria-label="Regresar">←</button><div class="ctitle">¿Cómo realizamos el cálculo de tu cartera vigente?</div>
+  <div class="w2" style="margin:6px 0 4px">Pedido <span style="color:var(--blue)">${pd[0]}</span></div>
   <p class="small">El resultado de tu cartera vigente se obtiene mediante la suma del saldo por interés y el saldo por capital, aplicando la siguiente fórmula:</p>
   <div class="w2">Saldo por Interés + Saldo por Capital = Cartera Vigente</div>
   <p class="small"><b>Con base en tus datos actuales, el cálculo se realiza de la siguiente manera:</b></p>
   <div class="grid2"><div class="y"><b>Saldo por Interés</b></div><div class="y"><b>Saldo por Capital</b></div></div>
-  <div class="eq"><span>0.00</span><span>+</span><span>13,772.00</span></div>
-  <div class="eq yy">Cartera vigente = 35,938.00</div>
+  <div class="eq"><span>${fmt2(inte)}</span><span>+</span><span>${fmt2(cap)}</span></div>
+  <div class="eq yy">Cartera vigente = ${fmt2(total)}</div>
   <p class="small">Este resultado representa el monto total acumulado de la cartera vigente al momento de la consulta, considerando tanto el capital pendiente como los intereses generados.</p>${HELP}</div>`;
 },
 escalafon(){
@@ -344,7 +350,7 @@ function go(name){
 }
 S.addEventListener('click',e=>{
   const t=e.target.closest('[data-go],[data-back],[data-act],[data-pick-emp],[data-pick-week]');if(!t)return;
-  if(t.dataset.go)return go(t.dataset.go);
+  if(t.dataset.go){if(t.dataset.ped){e.preventDefault();state.pedido=+t.dataset.ped;}return go(t.dataset.go);}
   if(t.hasAttribute('data-back')){const p=stack.pop();return render(p?p.name:'home',p?p.scroll:0);}
   const sc=S.scrollTop;
   if(t.dataset.act==='emp'){if(state.emp&&e.target.textContent==='✕'){state.emp=state.week=null;state.open=null;stack.length=0;return render('home');}state.open=state.open==='emp'?null:'emp';return render(cur,sc);}
