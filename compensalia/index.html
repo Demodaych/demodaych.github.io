@@ -88,6 +88,13 @@ td a{color:var(--blue);cursor:pointer;text-decoration:none}
 .tier{border-radius:6px;padding:12px;margin:8px 0;color:#222;position:relative;min-height:72px}
 .tier b{font-size:17px;display:block}.tier small{font-size:11px;font-weight:600}
 .tier .m{position:absolute;right:10px;bottom:10px;font-size:18px;font-weight:600}
+.nivbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:12px 0 4px;background:var(--blue);color:#fff;border:0;border-radius:24px;padding:12px 16px;font:600 14px Poppins,sans-serif;cursor:pointer;min-height:46px;box-shadow:0 4px 10px rgba(43,60,240,.25)}
+.nivbtn:hover{background:#2030d8}
+.niveles{animation:nivin .35s ease}
+@keyframes nivin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.tier.actual{box-shadow:0 0 0 3px var(--ink)}
+.tier .tag{position:absolute;right:10px;top:10px;background:var(--ink);color:#fff;font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:10px}
+.screen{overflow-x:hidden}
 .star{height:38px;border-radius:6px;display:grid;place-items:center;font-size:22px;margin:8px 0}
 .ind{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
 .ind .a{text-align:center;font-size:9px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:6px;border-radius:6px}
@@ -160,6 +167,8 @@ function bars(vals,labels,max,tipIdx,fmt){
 /* Pedidos simulados: [pedido, cartera vigente, saldo por interés]. El saldo por capital se calcula para que siempre cuadre. */
 const PEDIDOS=[[1710920,71371,5812.40],[1710945,140000,11236.75],[1711067,33825,2640.18],[1711105,28336,1987.55],[1711109,40710,3415.90],[1711170,28336,2268.30],[1711190,35938,3124.60],[1711214,28880,1756.25],[1711234,115624,9870.45],[1711277,39176,2904.80]];
 const fmt2=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+/* Niveles de escalafón (de mayor a menor) */
+const NIVELES=[['Diamante','De 28.0M en adelante','L 2,400.00','linear-gradient(90deg,#9fe3f5,#5b7cf0)','◆'],['Oro','De 21.0M a 28.0M','L 1,800.00','linear-gradient(90deg,#f6c94c,#e85a4f)','✦'],['Plata','De 14.0M a 21.0M','L 1,200.00','linear-gradient(90deg,#dcd6dc,#a99aa6)','✦'],['Bronce','De 7.0M a 14.0M','L 600.00','linear-gradient(90deg,#d2463d,#b8343a)','✦'],['Inicial','De 0.0M a 7.0M','L 0.00','linear-gradient(90deg,#e7e1e5,#c9bcc4)','✦']];
 const wk=(a,b)=>Array.from({length:b-a+1},(_,i)=>'2026-'+(a+i));
 const weekBlock=`<div class="week"><div class="w">2026, Semana 45</div><div class="d">del 2 de noviembre al 8 de noviembre 2026</div></div>`;
 
@@ -221,7 +230,8 @@ escalafon(){
   <div class="chart"><div style="font-weight:700;font-size:13px">PARA TU SIGUIENTE EVALUACIÓN DE ESCALAFÓN:</div><p class="small">El tamaño de la cartera vigente promedio que estás generando es de 27,152,201.55 y se construye con las siguientes semanas:</p>${bars(v2,wk(41,45),30,4,x=>(x*1e6).toLocaleString('en-US'))}</div>
   <div class="w2" style="font-weight:500">¿En qué escalafón estoy?<br><b style="font-size:17px">ORO - L 1800.00</b></div>
   <p class="small" style="text-align:center">¡Entre más incrementes el valor de tu cartera, mayor será tu escalafón!</p>
-  ${[['Oro','De 21.0M a 28.0M','L 1,800.00','linear-gradient(90deg,#f6c94c,#e85a4f)'],['Plata','De 14.0M a 21.0M','L 1,200.00','linear-gradient(90deg,#dcd6dc,#a99aa6)'],['Bronce','De 7.0M a 14.0M','L 600.00','linear-gradient(90deg,#d2463d,#b8343a)'],['Inicial','De 0.0M a 7.0M','L 0.00','linear-gradient(90deg,#e7e1e5,#c9bcc4)']].map(t=>`<div class="star" style="background:${t[3]};opacity:.55">✦</div><div class="tier" style="background:${t[3]}"><b>${t[0]}</b><small>${t[1]}</small><span class="m">${t[2]}</span></div>`).join('')}${HELP}</div>`;
+  <button class="nivbtn" data-act="niveles" aria-expanded="${state.niveles?'true':'false'}">Consulta los niveles de escalafón <span aria-hidden="true">${state.niveles?'⌃':'⌄'}</span></button>
+  ${state.niveles?`<div class="niveles">${NIVELES.map(t=>`<div class="star" style="background:${t[3]};opacity:.55">${t[4]}</div><div class="tier${t[0]==='Oro'?' actual':''}" style="background:${t[3]}">${t[0]==='Oro'?'<span class="tag">Tu nivel actual</span>':''}<b>${t[0]}</b><small>${t[1]}</small><span class="m">${t[2]}</span></div>`).join('')}</div>`:''}${HELP}</div>`;
 },
 vind(){
   const v=[3100,2500,1600,3200,4300,2900,1800,3662];
@@ -353,6 +363,7 @@ S.addEventListener('click',e=>{
   if(t.dataset.go){if(t.dataset.ped){e.preventDefault();state.pedido=+t.dataset.ped;}return go(t.dataset.go);}
   if(t.hasAttribute('data-back')){const p=stack.pop();return render(p?p.name:'home',p?p.scroll:0);}
   const sc=S.scrollTop;
+  if(t.dataset.act==='niveles'){state.niveles=!state.niveles;return render(cur,sc);}
   if(t.dataset.act==='emp'){if(state.emp&&e.target.textContent==='✕'){state.emp=state.week=null;state.open=null;stack.length=0;return render('home');}state.open=state.open==='emp'?null:'emp';return render(cur,sc);}
   if(t.dataset.act==='week'){if(state.week&&e.target.textContent==='✕'){state.week=null;state.open=null;stack.length=0;return render('home');}state.open=state.open==='week'?null:'week';return render(cur,sc);}
   if(t.dataset.pickEmp){state.emp=t.dataset.pickEmp;state.open='week';return render(cur,sc);}
