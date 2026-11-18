@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compensalia Perfil Maestro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+/* Replica de la app: marco de teléfono centrado, pila de pantallas navegable */
+:root{--blue:#2b3cf0;--yellow:#fcd54a;--ylight:#fff3c4;--green:#0d6b3c;--red:#e8433f;--ink:#1d1d1f;--muted:#6b6b70;--card:#fff;--page:#eceef6;--line:#e4e4e8;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);font-family:Poppins,system-ui,sans-serif;margin:0;padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;align-items:center;gap:12px}
+.hint{font-size:12px;color:var(--muted);text-align:center;max-width:390px}
+.phone{width:100%;max-width:390px;height:min(820px,calc(100vh - 80px));min-height:560px;background:#fff;border-radius:34px;border:10px solid #111;box-shadow:0 20px 50px rgba(20,20,60,.25);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.top{background:var(--blue);color:#fff;padding:8px 14px 10px}
+.status{display:flex;justify-content:space-between;font-size:11px;opacity:.9}
+.icons{display:flex;justify-content:space-between;margin:8px 0 6px;font-size:18px}
+.icons span{display:flex;gap:14px}
+.ttl{font-weight:500;font-size:15px}
+.screen{flex:1;overflow-y:auto;background:var(--ylight);position:relative}
+.screen.gray{background:#f1f1ef}
+.tabs{display:flex;justify-content:space-around;border-top:2px solid var(--blue);padding:6px 0 10px;background:#fff;font-size:10px;color:#999}
+.tabs div{display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs .on{color:var(--ink)}
+.pad{padding:12px}
+.emp{font-size:11px;text-align:center;line-height:1.35}
+.logo{background:var(--yellow);margin:8px 0;padding:6px;text-align:center;font-weight:800;font-size:34px;letter-spacing:-.5px;border-radius:4px}
+h2{margin:6px 0 2px;text-align:center;font-size:17px;font-weight:600}
+.sub{text-align:center;font-weight:600;font-size:13px;margin-bottom:8px}
+.sel{background:#fff;border:1px solid #d6d6d6;border-radius:4px;padding:8px 10px;font-size:11px;color:#555;display:flex;justify-content:space-between;align-items:center;margin:6px 0;cursor:pointer;gap:8px}
+.sel b{font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dd{background:#fff;border:1px solid #d6d6d6;margin-top:-6px;font-size:11px}
+.dd input{margin:6px;width:calc(100% - 12px);padding:6px;border:1.5px solid var(--blue);border-radius:4px;font:inherit}
+.dd div{padding:8px 10px;color:var(--blue);cursor:pointer;border-top:1px solid var(--line)}
+.dd div:hover{background:#eef0ff}
+.info{text-align:center;margin-top:60px}
+.info h3{margin:0 0 6px;font-size:17px}
+.info p{font-size:12px;margin:0;font-weight:500}
+.week{text-align:center;padding:10px 6px}
+.week .w{font-size:19px;font-weight:600}
+.week .d{font-size:14px;font-weight:600}
+hr{border:0;border-top:1.5px solid #555;margin:12px 30px}
+.big{text-align:center}
+.big .l{font-size:17px}
+.big .v{font-size:22px;font-weight:600}
+.pill{display:block;margin:14px auto;background:#fff;border:0;border-radius:24px;padding:8px 22px;font:500 20px Poppins,sans-serif;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.card{background:#fff;border-radius:6px;padding:10px;margin:10px 0}
+.card .h{font-weight:600;font-size:12px;margin-bottom:8px}
+.link{display:flex;align-items:center;gap:10px;background:#ececec;border-radius:4px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;border:0;width:100%;font-family:inherit}
+.link span{flex:1;text-align:left}
+.qi{width:34px;height:34px;flex:none;border-radius:9px;transform:rotate(45deg);background:linear-gradient(135deg,#ff6b8b,#ffb347);display:grid;place-items:center}
+.qi i{transform:rotate(-45deg);font-style:normal;color:#fff;font-weight:700;font-size:13px;width:18px;height:18px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;line-height:1}
+.help{display:flex;gap:10px;align-items:center;font-size:10.5px;background:#fbe9a8;border-radius:4px;padding:10px;margin:12px 0}
+.help .ic{font-size:26px}
+.rows .r{padding:9px 2px;border-bottom:1px solid var(--line);font-size:12px}
+.rows .r .k{font-weight:600}
+.rows .r .v{text-align:right;font-size:12.5px;font-weight:500}
+.rows .r.go{cursor:pointer}
+.rows .r.go:hover{background:#fff8dc}
+.back{font-size:22px;cursor:pointer;background:none;border:0;padding:0 4px;line-height:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.y{background:var(--yellow);border-radius:4px;padding:10px;text-align:center;font-size:12px}
+.y b{display:block;font-size:14px}
+.w2{background:#fff;border-radius:4px;padding:10px;text-align:center;font-size:12px;font-weight:600}
+.g{background:var(--green);color:#fff;border-radius:4px;padding:14px 10px;text-align:center}
+.g .l{font-size:14px}.g .v{font-size:20px;font-weight:600}
+.g .v.gold{color:var(--yellow)}
+.chip{display:block;width:max-content;margin:12px auto;background:var(--yellow);border-radius:20px;padding:4px 20px;font-weight:700;font-size:20px}
+table{width:100%;border-collapse:collapse;font-size:10.5px;background:#fff}
+th{background:var(--yellow);padding:7px 4px;font-weight:500}
+td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
+th.gr{background:#c8efb7}
+td a{color:var(--blue);cursor:pointer;text-decoration:none}
+.eq{display:flex;justify-content:space-around;align-items:center;font-weight:600;font-size:13px;background:#fff;border-radius:4px;padding:12px 6px;margin:8px 0;text-align:center;gap:6px;flex-wrap:wrap}
+.eq.yy{background:var(--yellow)}
+.eq small{display:block;font-weight:500;font-size:10px}
+.ctitle{font-size:16px;font-weight:600;text-align:center;margin:16px 0 4px}
+.small{font-size:11px;line-height:1.45;margin:6px 0}
+.chart{background:#fff;border-radius:4px;padding:10px;margin:8px 0}
+.chart .t{font-size:11px;color:#444;margin-bottom:6px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:130px;border-bottom:1px solid #ccc;padding-top:20px}
+.bars div{flex:1;border-radius:2px 2px 0 0;position:relative;cursor:pointer}
+.bars div:hover::after,.bars div.tip::after{content:attr(data-t);position:absolute;bottom:100%;left:50%;transform:translateX(-60%);background:#222;color:#fff;font-size:9px;white-space:nowrap;padding:2px 5px;border-radius:3px;margin-bottom:3px}
+.lbls{display:flex;gap:6px;font-size:8.5px;color:#555}
+.lbls span{flex:1;text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:44px}
+.cx{text-align:center;font-size:10px;color:#555}
+.tier{border-radius:6px;padding:12px;margin:8px 0;color:#222;position:relative;min-height:72px}
+.tier b{font-size:17px;display:block}.tier small{font-size:11px;font-weight:600}
+.tier .m{position:absolute;right:10px;bottom:10px;font-size:18px;font-weight:600}
+.star{height:38px;border-radius:6px;display:grid;place-items:center;font-size:22px;margin:8px 0}
+.ind{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.ind .a{text-align:center;font-size:9px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:6px;border-radius:6px}
+.ind .a:hover{background:#fff}
+.ind .b{background:#fff;border-radius:4px;display:flex;flex-direction:column;justify-content:center;text-align:center;font-size:12px;font-weight:600;padding:8px;min-height:70px}
+.red{background:var(--red);color:#fff;border-radius:4px;padding:12px;text-align:center;font-weight:600}
+.watermark{background-image:radial-gradient(circle at 20% 15%,rgba(252,213,74,.25) 0 30px,transparent 31px),radial-gradient(circle at 85% 40%,rgba(252,213,74,.2) 0 20px,transparent 21px)}
+.loading{position:absolute;inset:0;background:#fff;display:grid;place-items:center;z-index:5}
+.loading::after{content:"";width:22px;height:22px;border:2px solid #ccc;border-top-color:#555;border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.loading::after{animation:none}}
+button:focus-visible,.go:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+</style>
+
+<div class="phone">
+  <div class="top">
+    <div class="status"><span>2:28</span><span>LTE ▮▮▮ 65%</span></div>
+    <div class="icons"><span>✉ 🔔</span><span>ⓘ</span></div>
+    <div class="ttl">Inicio</div>
+  </div>
+  <div class="screen" id="screen"></div>
+  <div class="tabs"><div class="on">⌂<span>Inicio</span></div><div>▤<span>Informes</span></div><div>◯<span>Perfil</span></div></div>
+</div>
+<p class="hint">Demo navegable. Toca las opciones marcadas con › y usa ← para regresar.</p>
+
+<script>
+const S=document.getElementById('screen');
+const state={emp:null,week:null,open:null};
+const stack=[];
+const L=n=>'L '+n;
+const QI='<div class="qi"><i>Q</i></div>';
+const HELP='<div class="help"><span class="ic">💬</span><span>Para dudas o aclaraciones sobre tu compensación, acércate a tu líder para recibir orientación y apoyo.</span></div>';
+const EMPLOYEES=['(98081) SELVIN ANIBAL HERNANDEZ BAEZA','(97818) KEVIN EDUARDO GARCIA BARILLAS','(972666) DEBORA JUDITH PINZON MORALES','(419591) MILDRE LASTENIA SALGUERO ESCOBAR'];
+const WEEKS=['2026, Semana 45','2026, Semana 44','2026, Semana 43'];
+
+function header(back){
+  return `${back?'<button class="back" data-back aria-label="Regresar">←</button>':''}
+  <div class="emp"><b>Empleado:</b> 425964 - YOLANY YAMILETH CRUZ REYES<br><b>Puesto:</b> Asesor Maestro</div>
+  <div class="logo">Compen$alia</div><h2>Perfil Maestro</h2><div class="sub">Selecciona un empleado</div>
+  <div class="sel" data-act="emp"><b>${state.emp||'Selecciona un empleado (requerido)'}</b><span>${state.emp?'✕':'⌄'}</span></div>
+  ${state.open==='emp'?`<div class="dd"><input id="q" placeholder="Buscar" value=""><div id="opts">${EMPLOYEES.map(e=>`<div data-pick-emp="${e}">${e}</div>`).join('')}</div></div>`:''}
+  ${state.emp?`<div class="sel" data-act="week"><b>${state.week||'Selecciona una semana (requerido)'}</b><span>${state.week?'✕':'⌄'}</span></div>
+  ${state.open==='week'?`<div class="dd">${WEEKS.map(w=>`<div data-pick-week="${w}">${w}</div>`).join('')}</div>`:''}`:''}`;
+}
+function bars(vals,labels,max,tipIdx,fmt){
+  const shades=['#f3dc9e','#eed08a','#e8c477','#e2b863','#dcac50','#d6a03d','#cf942a','#c98818'];
+  return `<div class="bars">${vals.map((v,i)=>`<div class="${i===tipIdx?'tip':''}" style="height:${v/max*100}%;background:${i===vals.length-1&&tipIdx===vals.length-1?'#cfcfcf':shades[i%8]}" data-t="${labels[i]}: ${fmt?fmt(v):v}"></div>`).join('')}</div><div class="lbls">${labels.map(l=>`<span>${l}</span>`).join('')}</div><div class="cx">Semana</div>`;
+}
+const wk=(a,b)=>Array.from({length:b-a+1},(_,i)=>'2026-'+(a+i));
+const weekBlock=`<div class="week"><div class="w">2026, Semana 45</div><div class="d">del 2 de noviembre al 8 de noviembre 2026</div></div>`;
+
+const screens={
+home(){
+  if(!state.emp||!state.week) return `<div class="pad">${header(false)}<div class="info"><h3>Información:</h3><p>Para visualizar la información relevante de un empleado, primero selecciónelo en el cuadro de selección.</p><div style="font-size:18px;margin-top:6px">🔍</div></div></div>`;
+  return `<div class="pad watermark">${header(false)}${weekBlock}<hr><div class="big"><div class="l">Esta semana te llevas</div><div class="v">L 10,354.05</div></div><hr>
+  <button class="pill" data-go="pago">Ver detalles</button>
+  <div class="card"><div class="h">Así se compone tu cartera total:</div><button class="link" data-go="cartera">${QI}<span>Cartera total semanal</span>›</button></div>${HELP}</div>`;
+},
+pago(){
+  return `<div class="pad watermark">${header(true)}${weekBlock}<hr><div class="big"><div class="l">Esta semana te llevas</div><div class="v">L 10,354.05</div></div><hr>
+  <div class="card rows"><div class="h" style="text-align:center">Tu pago se compone por:</div>
+  <div class="r"><div class="k">FIJO SEMANAL</div><div class="v">L 4,250.00</div></div>
+  <div class="r go" tabindex="0" data-go="escalafon"><div class="k">ESCALAFÓN<br>ORO</div><div class="v">L 1800.00 ›</div></div>
+  <div class="r go" tabindex="0" data-go="vind"><div class="k">VARIABLE INDIVIDUAL</div><div class="v">L 3,662.05 ›</div></div>
+  <div class="r go" tabindex="0" data-go="veq"><div class="k">VARIABLE EQUIPO</div><div class="v">L 642.00 ›</div></div>
+  <div class="r"><div class="k">CONCURSOS</div><div class="v">L 0.00</div></div></div>${HELP}</div>`;
+},
+cartera(){
+  const rows=[[1710920,71371],[1710945,140000],[1711067,33825],[1711105,28336],[1711109,40710],[1711170,28336],[1711190,35938],[1711214,28880],[1711234,115624],[1711277,39176]];
+  return `<div class="pad watermark">${header(true)}<div class="ctitle">¿Cómo se compone tu cartera esta semana?</div><div class="small" style="text-align:center;font-weight:600">2 de noviembre al 8 de noviembre 2026</div>
+  <div class="grid2"><div class="y"><b>L 26,636,044.79</b>Cartera Vigente</div><div class="y"><b>L 947,571.00</b>Cartera vigente colocada esta semana</div></div>
+  <div class="w2">Cartera total = L 27,583,615.79</div><span class="chip">Semana</span>
+  <div style="overflow-x:auto"><table><tr><th>Pedido ↑</th><th>Cartera Vigente</th><th>Detalle</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].toFixed(2)}</td><td><a data-go="vigente">Ver mas</a></td></tr>`).join('')}</table></div>${HELP}</div>`;
+},
+vigente(){
+  return `<div class="pad"><button class="back" data-back aria-label="Regresar">←</button><div class="ctitle">¿Cómo realizamos el cálculo de tu cartera vigente?</div>
+  <p class="small">El resultado de tu cartera vigente se obtiene mediante la suma del saldo por interés y el saldo por capital, aplicando la siguiente fórmula:</p>
+  <div class="w2">Saldo por Interés + Saldo por Capital = Cartera Vigente</div>
+  <p class="small"><b>Con base en tus datos actuales, el cálculo se realiza de la siguiente manera:</b></p>
+  <div class="grid2"><div class="y"><b>Saldo por Interés</b></div><div class="y"><b>Saldo por Capital</b></div></div>
+  <div class="eq"><span>0.00</span><span>+</span><span>13,772.00</span></div>
+  <div class="eq yy">Cartera vigente = 35,938.00</div>
+  <p class="small">Este resultado representa el monto total acumulado de la cartera vigente al momento de la consulta, considerando tanto el capital pendiente como los intereses generados.</p>${HELP}</div>`;
+},
+escalafon(){
+  const v=[26.0,26.2,26.3,26.4,26.5,26.6,26.6,26.47];
+  const v2=[27.0,27.1,27.05,27.15,27.152];
+  return `<div class="pad watermark" style="background-color:#f1f1ef">${header(true)}
+  <div class="g"><div class="l">Esta semana te llevas</div><div class="v gold">ORO - L 1800.00</div></div>
+  <div class="chart"><div class="h" style="font-weight:600;font-size:13px">Resultado de tu último escalafón</div><p class="small">Por haber obtenido una cartera vigente promedio de 26,466,648.62.</p>${bars(v,wk(33,40),30,7,x=>(x*1e6).toLocaleString('en-US',{maximumFractionDigits:2}))}</div>
+  <div class="grid2"><div class="g" style="padding:10px"><b>1800.00 - ORO</b><div style="font-size:11px">2026, Semana 45</div></div><div class="y"><b>Cartera Vigente Promedio Progresivo</b>L 27,152,201.55</div></div>
+  <div class="chart"><div style="font-weight:700;font-size:13px">PARA TU SIGUIENTE EVALUACIÓN DE ESCALAFÓN:</div><p class="small">El tamaño de la cartera vigente promedio que estás generando es de 27,152,201.55 y se construye con las siguientes semanas:</p>${bars(v2,wk(41,45),30,4,x=>(x*1e6).toLocaleString('en-US'))}</div>
+  <div class="w2" style="font-weight:500">¿En qué escalafón estoy?<br><b style="font-size:17px">ORO - L 1800.00</b></div>
+  <p class="small" style="text-align:center">¡Entre más incrementes el valor de tu cartera, mayor será tu escalafón!</p>
+  ${[['Oro','De 21.0M a 28.0M','L 1,800.00','linear-gradient(90deg,#f6c94c,#e85a4f)'],['Plata','De 14.0M a 21.0M','L 1,200.00','linear-gradient(90deg,#dcd6dc,#a99aa6)'],['Bronce','De 7.0M a 14.0M','L 600.00','linear-gradient(90deg,#d2463d,#b8343a)'],['Inicial','De 0.0M a 7.0M','L 0.00','linear-gradient(90deg,#e7e1e5,#c9bcc4)']].map(t=>`<div class="star" style="background:${t[3]};opacity:.55">✦</div><div class="tier" style="background:${t[3]}"><b>${t[0]}</b><small>${t[1]}</small><span class="m">${t[2]}</span></div>`).join('')}${HELP}</div>`;
+},
+vind(){
+  const v=[3100,2500,1600,3200,4300,2900,1800,3662];
+  return `<div class="pad watermark" style="background-color:#f1f1ef">${header(true)}
+  <div class="g"><div class="l">Esta semana te llevas</div><div class="v">L 3,662.05</div></div>
+  <div class="chart"><div class="t">HISTÓRICO DE VARIABLE INDIVIDUAL</div>${bars(v,wk(38,45),5000,-1,x=>x.toLocaleString())}</div>
+  <div class="grid2"><div class="g" style="padding:10px;font-size:12px"><b>2026, Semana 45</b><br>del 2 de noviembre al 8 de noviembre 2026</div><div class="y"><b style="font-size:17px">L 3,662.05</b>Total</div></div>
+  <p class="small" style="font-weight:500">Recuerda que en tu variable individual puedes ganar hasta L 7,630.00</p>
+  <div class="h" style="font-weight:600;margin:10px 0">Tu variable individual se compone por:</div>
+  <div class="ind">
+   <div class="a" data-go="intereses">${QI}Comisión por cobro de intereses ›</div><div class="b">Mi comisión actual es de:<br><span style="font-size:15px">L 3,845.95</span></div>
+   <div class="a">${QI}Comisión por uso y disposición de tarjetas</div><div class="b">Mi comisión actual es de:<br><span style="font-size:15px">L 0.00</span></div>
+   <div class="a" data-go="calidad">${QI}Descuento por calidad de cartera ›</div><div class="b">Mi descuento actual es de:<br><span style="font-size:15px">L -183.90</span></div>
+  </div>${HELP}</div>`;
+},
+intereses(){
+  const det=[['08/11/2024',1612525,600],['09/10/2024',1617570,517],['09/24/2024',605247773,116],['09/26/2024',1620176,1014],['10/12/2024',1622673,332],['10/15/2024',1623247,1433],['10/20/2024',1624014,97],['10/20/2024',1624087,748],['11/08/2024',1627122,440],['11/09/2024',1627401,431],['11/22/2024',1629278,1674],['11/25/2024',1629806,235],['12/11/2024',1632120,341],['12/11/2024',1632122,341],['12/11/2024',1632125,238],['12/24/2024',1634731,682]];
+  return `<div class="pad watermark" style="background-color:#f1f1ef"><button class="back" data-back aria-label="Regresar">←</button>
+  <div class="ctitle">Detalle de comisión por cobro de intereses</div><p class="small" style="text-align:center;font-weight:600">2 de noviembre al 8 de noviembre 2026</p>
+  <div class="grid2"><div class="y"><b>Mi comisión:</b></div><div class="y"><b>L 3,845.95</b></div></div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <table><tr><th>Rango de Intereses</th><th>Porcentaje Comisión</th></tr><tr><td>0 a 40,000</td><td>4.00%</td></tr><tr><td>40,001 en adelante</td><td>2.50%</td></tr></table>
+  <div class="grid2"><div class="w2">L 40,000.00<br><span style="color:var(--blue)">x 4.00%</span></div><div class="w2">L 89,838.00<br><span style="color:var(--blue)">x 2.50%</span></div></div>
+  <div class="eq yy" style="font-size:16px">L 1,600.00 + L 2,245.95</div>
+  <div class="eq"><span>L 129,838.00<small>Intereses cobrados de la semana</small></span><span>=</span><span>L 3,845.95<small>Comisión total</small></span></div>
+  <div class="ctitle">Detalle</div>
+  <table><tr><th>Fecha</th><th>Detalle</th><th>Monto</th></tr>${det.map(d=>`<tr><td>${d[0]}</td><td>${d[1]}</td><td>${d[2].toFixed(2)}</td></tr>`).join('')}</table>
+  <p class="small" style="text-align:center;font-weight:600;margin-top:12px">El tamaño de tu cartera actual es de L 27,583,615.79. Esta semana cobraste en intereses L 129,838.00</p>${HELP}</div>`;
+},
+calidad(){
+  return `<div class="pad watermark" style="background-color:#f1f1ef"><button class="back" data-back aria-label="Regresar">←</button>
+  <div class="ctitle">Detalle de descuento por calidad de cartera</div><p class="small" style="text-align:center;font-weight:600">2 de noviembre al 8 de noviembre 2026</p>
+  <div class="grid2"><div class="red">Descuento:</div><div class="red">L -183.90</div></div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <div class="grid2"><div class="w2">El deterioro de tu cartera fue de:</div><div class="w2">Porcentaje de descuento:</div></div>
+  <div class="eq">L 9,194.81 &nbsp;x&nbsp; -2.00%</div><div class="eq">Tu descuento fue = L -183.90</div>
+  <div class="ctitle">Detalle</div>
+  <table><tr><th>Pedido</th><th>Saldo</th><th>Semana</th></tr><tr><td>1683119</td><td>9194.81</td><td>7</td></tr></table>${HELP}</div>`;
+},
+veq(){
+  const v=[560,560,500,360,400,280,680,642];
+  return `<div class="pad watermark" style="background-color:#f1f1ef">${header(true)}
+  <div class="g"><div class="l">Esta semana te llevas</div><div class="v">L 642.00</div></div>
+  <div class="chart"><div class="t">HISTÓRICO DE VARIABLE EQUIPO</div>${bars(v,wk(38,45),1000,7,x=>x.toFixed(2))}</div>
+  <div class="grid2"><div class="g" style="padding:10px;font-size:12px"><b>2026, Semana 45</b><br>2 de noviembre al 8 de noviembre 2026</div><div class="y"><b style="font-size:17px">107.00</b>puntos</div></div>
+  <p class="small" style="color:#555">Sigue colaborando con tu equipo, recuerda que te puedes llevar hasta el 100% de tu variable individual.</p>
+  <div class="h" style="font-weight:600;margin:10px 0">Indicadores de tu variable equipo:</div>
+  <div class="ind">
+   <div class="a" data-go="perdidos">${QI}Clientes perdidos ›</div><div class="b">50.00<br>puntos</div>
+   <div class="a" data-go="nuevos">${QI}Clientes nuevos ›</div><div class="b">33.00<br>puntos</div>
+   <div class="a" data-go="captacion">${QI}Captación ›</div><div class="b">24.00<br>puntos</div>
+  </div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <div class="grid2"><div class="w2">Total de Puntos:</div><div class="w2">Bono base:</div></div>
+  <div class="eq">107.00 &nbsp;X&nbsp; 600.00<br>/ Factor (100)</div><div class="eq">Comisión = 642.00</div>${HELP}</div>`;
+},
+perdidos(){
+  return `<div class="pad watermark" style="background-color:#f1f1ef"><button class="back" data-back aria-label="Regresar">←</button>
+  <div class="ctitle">Detalle de flujo de clientes perdidos</div><p class="small" style="font-weight:600">2 de noviembre al 8 de noviembre 2026</p>
+  <div class="eq yy"><span>2.00<small>Logro de tu sucursal</small></span><span>=</span><span>50.00<small>Puntos Ganados</small></span></div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <table><tr><th class="gr">Logro</th><th class="gr">Puntos ↓</th></tr>${[[10,60],[5,55],[1,50],[-1,40],[-1000,0]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
+  <div class="grid2"><div class="y"><b>Clientes Perdidos:</b></div><div class="y"><b>Clientes Reactivados:</b></div></div>
+  <div class="eq">-23.00 &nbsp;+&nbsp; 14.00</div><div class="eq yy">Flujo neto de clientes = -9.00</div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <div class="grid2"><div class="w2">Flujo neto de clientes:</div><div class="w2">Logro meta:</div></div>
+  <div class="eq">-9.00 &nbsp;-&nbsp; -11.00</div><div class="eq">Logro = 2.00</div>${HELP}</div>`;
+},
+nuevos(){
+  return `<div class="pad watermark" style="background-color:#f1f1ef"><button class="back" data-back aria-label="Regresar">←</button>
+  <div class="ctitle">Detalle de clientes nuevos</div><p class="small" style="font-weight:600">2 de noviembre al 8 de noviembre 2026</p>
+  <div class="eq yy"><span>118.18%<small>Logro de tu sucursal</small></span><span>=</span><span>33.00<small>Puntos ganados</small></span></div>
+  <div class="h" style="font-weight:600;font-size:12px">Así lo calculamos:</div>
+  <table><tr><th class="gr">Logro</th><th class="gr">Puntos ↓</th></tr>${[['120%',36],['110%',33],['100%',30],['80%',24],['0%',0]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
+  <div class="h" style="font-weight:600;font-size:12px;margin-top:12px">Logro de tus clientes nuevos:</div>
+  <div class="grid2"><div class="y"><b>Clientes nuevos:</b></div><div class="y"><b>Objetivo:</b></div></div>
+  <div class="eq">13.00 &nbsp;/&nbsp; 11.00<br>x Factor (100)</div><div class="eq yy">Logro = 118.18%</div>${HELP}</div>`;
+},
+captacion(){
+  const sem=[['2026-44','79,561,497.99'],['2026-43','78,961,165.40'],['2026-42','79,047,595.40'],['2026-41','79,308,737.73'],['2026-40','79,078,937.82'],['2026-39','78,930,203.16'],['2026-38','78,672,481.51'],['2026-37','78,860,911.62']];
+  return `<div class="pad watermark" style="background-color:#f1f1ef"><button class="back" data-back aria-label="Regresar">←</button>
+  <div class="ctitle">Detalle de captación</div><p class="small" style="font-weight:600">2 de noviembre al 8 de noviembre 2026</p>
+  <div class="grid2"><div class="w2">Captación neta de tu sucursal</div><div class="w2">Puntos ganados</div></div>
+  <div class="eq"><span>L 296,800.25</span><span>=</span><span>24.00</span></div>
+  <div class="h" style="font-weight:600;font-size:12px">Así va tu progreso:</div>
+  <table><tr><th class="gr">Metas</th><th class="gr">Puntos ↓</th></tr>${[['264,747.18',24],['242,684.91',22],['220,622.65',20],['176,498.12',16],['0.00',0]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
+  <div class="h" style="font-weight:600;font-size:12px;margin-top:12px">Así lo calculamos:</div>
+  <div class="grid2"><div class="w2">Saldo de captación actual:</div><div class="w2">Promedio de 8 semanas previas:</div></div>
+  <div class="eq">79,349,491.57 &nbsp;-&nbsp; 79,052,691.33</div><div class="eq">Captación Neta = L 296,800.25</div>
+  <p class="small">Si tu captación neta es negativa, esto no genera deuda. Aparecerá L 0.00</p>
+  <p class="small">Detalle de las 8 semanas previas:</p>
+  <table><tr><th>Semana ↓</th><th>Saldo</th></tr>${sem.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
+  <div class="eq">Promedio = 79,052,691.33</div>${HELP}</div>`;
+}
+};
+
+let cur='home';
+function render(name,scroll){
+  cur=name;S.innerHTML=screens[name]();
+  S.className='screen'+(['escalafon','vind','veq','intereses','calidad','perdidos','nuevos','captacion'].includes(name)?' gray':'');
+  S.scrollTop=scroll||0;
+  const q=document.getElementById('q');
+  if(q){q.focus();q.oninput=()=>{const t=q.value.toLowerCase();document.querySelectorAll('[data-pick-emp]').forEach(d=>d.hidden=!d.textContent.toLowerCase().includes(t));};}
+}
+function go(name){
+  const ld=document.createElement('div');ld.className='loading';S.appendChild(ld);
+  stack.push({name:cur,scroll:S.scrollTop});
+  setTimeout(()=>render(name),350);
+}
+S.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go],[data-back],[data-act],[data-pick-emp],[data-pick-week]');if(!t)return;
+  if(t.dataset.go)return go(t.dataset.go);
+  if(t.hasAttribute('data-back')){const p=stack.pop();return render(p?p.name:'home',p?p.scroll:0);}
+  const sc=S.scrollTop;
+  if(t.dataset.act==='emp'){if(state.emp&&e.target.textContent==='✕'){state.emp=state.week=null;state.open=null;stack.length=0;return render('home');}state.open=state.open==='emp'?null:'emp';return render(cur,sc);}
+  if(t.dataset.act==='week'){if(state.week&&e.target.textContent==='✕'){state.week=null;state.open=null;stack.length=0;return render('home');}state.open=state.open==='week'?null:'week';return render(cur,sc);}
+  if(t.dataset.pickEmp){state.emp=t.dataset.pickEmp;state.open='week';return render(cur,sc);}
+  if(t.dataset.pickWeek){state.week=t.dataset.pickWeek;state.open=null;stack.length=0;const ld=document.createElement('div');ld.className='loading';S.appendChild(ld);setTimeout(()=>render('home'),450);}
+});
+S.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-go]'))go(e.target.dataset.go);});
+render('home');
+</script>
+
+</html>
