@@ -99,6 +99,21 @@ td a{color:var(--blue);cursor:pointer;text-decoration:none}
 .loading::after{content:"";width:22px;height:22px;border:2px solid #ccc;border-top-color:#555;border-radius:50%;animation:sp .6s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.loading::after{animation:none}}
+.login{min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px 22px;gap:14px}
+.login .logo{margin:0 0 4px}
+.login h2{margin:0}
+.login p.lead{margin:0;text-align:center;font-size:12px;color:var(--muted)}
+.login label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600}
+.login input{font:500 14px Poppins,sans-serif;padding:11px 12px;border:1.5px solid #d6d6d6;border-radius:8px;background:#fff;color:var(--ink);min-height:44px}
+.login input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,60,240,.15)}
+.login .pw{position:relative;display:flex;width:100%}
+.login .pw input{flex:1;min-width:0;width:100%;padding-right:76px}
+.login .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font:600 11px Poppins,sans-serif;color:var(--blue);cursor:pointer;padding:8px;min-height:36px}
+.login .enter{margin-top:4px;background:var(--blue);color:#fff;border:0;border-radius:24px;padding:12px;font:600 15px Poppins,sans-serif;cursor:pointer;min-height:46px}
+.login .enter:hover{background:#2030d8}
+.login .err{display:none;background:#fde8e7;color:#b3261e;border-radius:8px;padding:9px 11px;font-size:11.5px;font-weight:600;text-align:center}
+.login .err.show{display:block}
+.login .note{font-size:10.5px;color:var(--muted);text-align:center;margin:0}
 button:focus-visible,.go:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </style>
 
@@ -115,6 +130,12 @@ button:focus-visible,.go:focus-visible,[tabindex]:focus-visible{outline:2px soli
 
 <script>
 const S=document.getElementById('screen');
+/* Acceso a la demo: agrega aquí los correos autorizados (en minúsculas) */
+const USUARIOS=['rony.avila@gruposalinas.com'];
+const CLAVE='Compensalia.1';
+let AUTH=false;
+try{AUTH=sessionStorage.getItem('comp_auth')==='1';}catch(e){}
+
 const state={emp:null,week:null,open:null};
 const stack=[];
 const L=n=>'L '+n;
@@ -140,6 +161,18 @@ const wk=(a,b)=>Array.from({length:b-a+1},(_,i)=>'2026-'+(a+i));
 const weekBlock=`<div class="week"><div class="w">2026, Semana 45</div><div class="d">del 2 de noviembre al 8 de noviembre 2026</div></div>`;
 
 const screens={
+login(){
+  return `<form class="login" id="loginForm" novalidate autocomplete="on">
+    <div class="logo">Compen$alia</div>
+    <h2>Iniciar sesión</h2>
+    <p class="lead">Ingresa con tu correo corporativo para acceder a la demo.</p>
+    <label for="lgUser">Usuario<input id="lgUser" type="email" inputmode="email" autocomplete="username" placeholder="nombre.apellido@gruposalinas.com" required></label>
+    <label for="lgPass">Contraseña<span class="pw"><input id="lgPass" type="password" autocomplete="current-password" placeholder="Contraseña" required><button type="button" class="eye" id="lgEye" aria-label="Mostrar contraseña">Mostrar</button></span></label>
+    <div class="err" id="lgErr" role="alert"></div>
+    <button type="submit" class="enter">Ingresar</button>
+    <p class="note">Si tienes problemas para ingresar, acércate al equipo de Capital Humano.</p>
+  </form>`;
+},
 home(){
   if(!state.emp||!state.week) return `<div class="pad">${header(false)}<div class="info"><h3>Información:</h3><p>Para visualizar la información relevante de un empleado, primero selecciónelo en el cuadro de selección.</p><div style="font-size:18px;margin-top:6px">🔍</div></div></div>`;
   return `<div class="pad watermark">${header(false)}${weekBlock}<hr><div class="big"><div class="l">Esta semana te llevas</div><div class="v">L 10,354.05</div></div><hr>
@@ -284,8 +317,25 @@ function render(name,scroll){
   cur=name;S.innerHTML=screens[name]();
   S.className='screen'+(['escalafon','vind','veq','intereses','calidad','perdidos','nuevos','captacion'].includes(name)?' gray':'');
   S.scrollTop=scroll||0;
+  if(name==='login') bindLogin();
   const q=document.getElementById('q');
   if(q){q.focus();q.oninput=()=>{const t=q.value.toLowerCase();document.querySelectorAll('[data-pick-emp]').forEach(d=>d.hidden=!d.textContent.toLowerCase().includes(t));};}
+}
+function bindLogin(){
+  const f=document.getElementById('loginForm'),u=document.getElementById('lgUser'),pw=document.getElementById('lgPass'),er=document.getElementById('lgErr'),eye=document.getElementById('lgEye');
+  eye.onclick=()=>{const sh=pw.type==='password';pw.type=sh?'text':'password';eye.textContent=sh?'Ocultar':'Mostrar';eye.setAttribute('aria-label',sh?'Ocultar contraseña':'Mostrar contraseña');};
+  f.onsubmit=e=>{
+    e.preventDefault();
+    const mail=u.value.trim().toLowerCase(), clave=pw.value;
+    er.classList.remove('show');
+    if(!mail||!clave){er.textContent='Ingresa tu correo y tu contraseña.';er.classList.add('show');return;}
+    if(!USUARIOS.includes(mail)){er.textContent='Este correo no tiene acceso a la demo.';er.classList.add('show');u.focus();return;}
+    if(clave!==CLAVE){er.textContent='La contraseña es incorrecta.';er.classList.add('show');pw.value='';pw.focus();return;}
+    AUTH=true; try{sessionStorage.setItem('comp_auth','1');}catch(err){}
+    const ld=document.createElement('div');ld.className='loading';S.appendChild(ld);
+    setTimeout(()=>render('home'),500);
+  };
+  u.focus();
 }
 function go(name){
   const ld=document.createElement('div');ld.className='loading';S.appendChild(ld);
@@ -303,7 +353,7 @@ S.addEventListener('click',e=>{
   if(t.dataset.pickWeek){state.week=t.dataset.pickWeek;state.open=null;stack.length=0;const ld=document.createElement('div');ld.className='loading';S.appendChild(ld);setTimeout(()=>render('home'),450);}
 });
 S.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-go]'))go(e.target.dataset.go);});
-render('home');
+render(AUTH?'home':'login');
 </script>
 
 </html>
